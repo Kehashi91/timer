@@ -4,6 +4,7 @@ and record my time spent, excluding breaks or distractions
 """
 
 from datetime import datetime, timedelta
+import json
 
 def maketimenice(input_time):
 
@@ -40,7 +41,8 @@ class Timer():
         self.pause_start = timedelta(0)
         self.totaltime = 0
         self.paused = False
-        
+        self.events = ["E", "P"]
+
     def pausehandle(self):
         if self.paused == False:
             self.pause_start = datetime.now()
@@ -55,10 +57,17 @@ class Timer():
             pause_time = datetime.now() - self.pause_start
             self.pause_total += pause_time
         self.totaltime = datetime.now() - self.starttime - self.pause_total
+        data_to_json = {"work_time":str(self.totaltime), "start_time":str(self.starttime)}
+        json_str = json.dumps(data_to_json)
+        with open('data.json', 'w') as f:
+            json.dump(data_to_json, f)
+        print(json_str)
         print (str(self.totaltime))
         exit(0)
+
         
     def eventhandle(self, input):
+
         if input == "E":
             self.exithandle()
         if input == "P":
@@ -71,6 +80,6 @@ if __name__ == "__main__":
     print ("You have started at {}".format(maketimenice(datetime.now())))
     
     while True:
-        user_choice = inputhandler(["E", "P"], "Input 'P' to pause/unpause or 'E' to exit and save")
+        user_choice = inputhandler(timer.events, "Input 'P' to pause/unpause or 'E' to exit and save")
         timer.eventhandle(user_choice)
     

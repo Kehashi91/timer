@@ -1,6 +1,7 @@
 import unittest
 from datetime import datetime, timedelta
 import time
+import json
 
 from timer import Timer, inputhandler
 
@@ -9,7 +10,7 @@ class Test_basic_timer(unittest.TestCase):
     def setUp(self):
         self.timer = Timer()
         self.testime_tolerance = timedelta(seconds=2)
-        
+
     def test_no_pause_5_seconds(self):
         testime_limit = timedelta(seconds=5)
         time.sleep(5)
@@ -36,6 +37,14 @@ class Test_basic_timer(unittest.TestCase):
         with self.assertRaises(SystemExit) as cm:
             self.timer.exithandle()
         self.assertTrue(testime_limit - self.testime_tolerance < self.timer.totaltime < testime_limit + self.testime_tolerance)
-        
+
+    def test_json_synchronization(self):
+        time.sleep(5)
+        with self.assertRaises(SystemExit) as cm:
+            self.timer.exithandle()
+        with open('data.json', 'r') as f:
+            json_data = json.load(f)
+        self.assertEqual(json_data["work_time"], str(self.timer.totaltime))
+
 if __name__ == '__main__':
     unittest.main()
