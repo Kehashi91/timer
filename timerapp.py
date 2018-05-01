@@ -10,14 +10,14 @@ timerdata = []
 def index():
     return "<b>test</b>"
 
-@app.route('/timer/api/v0.1/timerdata', methods=['GET'])
+@app.route('/timer/timerdata', methods=['GET'])
 def get_time():
     if timerdata:
         return jsonify({'timerdata': timerdata})
     else:
         abort(404)
 
-@app.route('/timer/api/v0.1/timerdata', methods=['POST'])
+@app.route('/timer/timerdata', methods=['POST'])
 def post_time():
     if not request.json or not "work_time" in request.json or not "start_time" in request.json:
         abort(400)

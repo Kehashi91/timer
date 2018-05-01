@@ -5,6 +5,7 @@ and record my time spent, excluding breaks or distractions
 
 from datetime import datetime, timedelta
 import json
+import requests
 
 def maketimenice(input_time):
 
@@ -27,7 +28,20 @@ def inputhandler(expected_inputs, msg=None):
             return user_choice
         else:
             print ("Wrong choice!")
-            
+
+def api_data_dump(data):
+    try:
+        r = requests.post('http://127.0.0.1:5000/timer/timerdata', json=data)
+        if r.status_code == 201:
+            print("Data postes succesfuly to endpoint.")
+        else:
+            print("Problem encountered during data posting - {} status code from server".format(r.status_code))
+            exit(1)
+    except Exception as e:
+        print("Encontered an exception:")
+        print(e)
+        exit(1)
+
             
 class Timer():
 
@@ -57,15 +71,12 @@ class Timer():
             pause_time = datetime.now() - self.pause_start
             self.pause_total += pause_time
         self.totaltime = datetime.now() - self.starttime - self.pause_total
-        data_to_json = {"work_time":str(self.totaltime), "start_time":str(self.starttime)}
-        json_str = json.dumps(data_to_json)
-        with open('data.json', 'w') as f:
-            json.dump(data_to_json, f)
-        print(json_str)
+        data_to_json = {"start_time":str(self.starttime), "work_time":str(self.totaltime)}
+        api_data_dump(data_to_json)
         print (str(self.totaltime))
         exit(0)
 
-        
+
     def eventhandle(self, input):
 
         if input == "E":
