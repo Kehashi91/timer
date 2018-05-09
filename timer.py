@@ -29,12 +29,16 @@ def inputhandler(expected_inputs, msg=None):
         else:
             print ("Wrong choice!")
 
-def api_data_dump(data):
+def api_data_dump(data, runtime_test=False):
     try:
-        r = requests.post('http://127.0.0.1:5000/timer/timerdata', json=data)
-        if r.status_code == 201:
+        if runtime_test == False:
+            r = requests.post('http://127.0.0.1:5000/timer/v0.1/posttime', json=data)
+        elif runtime_test == True:
+            r = requests.post('http://127.0.0.1:5000/timer/v0.1/runtime_test', json=data)
+
+        if r.status_code == 201 and runtime_test == False:
             print("Data postes succesfuly to endpoint.")
-        else:
+        elif r.status_code != 201:
             print("Problem encountered during data posting - {} status code from server".format(r.status_code))
             exit(1)
     except Exception as e:
@@ -87,6 +91,9 @@ class Timer():
 if __name__ == "__main__":
 
     timer = Timer()
+
+
+    api_data_dump({"test_data":"test data"}, runtime_test=True)
     
     print ("You have started at {}".format(maketimenice(datetime.now())))
     
