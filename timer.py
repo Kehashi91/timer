@@ -75,7 +75,7 @@ class Timer():
             pause_time = datetime.now() - self.pause_start
             self.pause_total += pause_time
         self.totaltime = datetime.now() - self.starttime - self.pause_total
-        data_to_json = {"start_time":str(self.starttime), "work_time":str(self.totaltime)}
+        data_to_json = {"username":"main", "starttime":str(self.starttime), "worktime":str(self.totaltime)}
         api_data_dump(data_to_json)
         print (str(self.totaltime))
         exit(0)
